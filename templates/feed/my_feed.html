@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Лента{% endblock %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+        {% include 'snippets/publish_post_form.html' with form=form %}
+    {% endif %}
+    {% if following_posts %}
+        {% include 'snippets/posts_feed.html' with posts=following_posts title="Моя лента" %}
+    {% endif %}
+    {% include 'snippets/posts_feed.html' with posts=latest_posts title="Интересное" %}
+{% endblock %}

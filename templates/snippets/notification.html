@@ -1,0 +1,7 @@
+{% load mention %}
+{% load humanize %}
+<div class="notification">
+    {{ notification | mention_raw }}
+    <span style="display: none">{{ notification.mark_as_read }}</span>
+    <hr>
+</div>

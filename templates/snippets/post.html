@@ -1,0 +1,25 @@
+{% load mention %}
+{% load static %}
+{% load humanize %}
+
+<div id="post" data-id="{{ post.id }}">
+    <p>{% include 'snippets/user_mention.html' with profile=post.author.profile %}
+        <i class="published_at">{{ post.published_at | naturaltime }}</i>:
+    </p>
+    <p class="post_text">{{ post.text | mention }}</p>
+    <p class="post_details">
+        {% if request.user in post.liked_by_users %}
+            <i class="likes_icon fi fi-sr-heart"></i>
+            <b class="likes_value">{{ post.likes_count }}</b>
+            {% comment %}<img class="likes_image" src="{% static 'images/heart_on.png' %}"/>{% endcomment %}
+        {% else %}
+            <i class="likes_icon fi fi-rr-heart"></i>
+            <span class="likes_value">{{ post.likes_count }}</span>
+            {% comment %}<img class="likes_image" src="{% static 'images/heart_off.png' %}"/>{% endcomment %}
+        {% endif %}
+        <span></span>
+        {% if request.user == post.author or request.user.is_superuser %}
+            <a href="{% url 'feed.delete_post' pk=post.id %}"><i class="fi fi-rr-trash"></i></a>
+        {% endif %}
+    </p>
+</div>

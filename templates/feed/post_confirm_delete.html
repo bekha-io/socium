@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Подтвердить удаление{% endblock %}
+
+{% block content %}
+    <article>
+    {% include 'snippets/post.html' with post=post %}
+    </article>
+    <form method="post">
+        {% csrf_token %}
+        <h3>Вы действительно хотите удалить пост?</h3>
+        <input type="submit" value="Удалить">
+    </form>
+{% endblock %}

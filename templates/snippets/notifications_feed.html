@@ -1,0 +1,8 @@
+<section class="feed">
+    {% if title %}
+        <h2>{{ title }}</h2>
+    {% endif %}
+    {% for notification in notifications %}
+        {% include 'snippets/notification.html' with notification=notification %}
+    {% endfor %}
+</section>

@@ -1,0 +1,7 @@
+<a class="user-mention" href="{% url 'profile.guest' pk=profile.user.id %}">
+    {% if profile.avatar_url %}
+    <img src="{{ profile.avatar_url }}" id="avatar-18"> <b>{{ profile.mention }}</b>
+    {% else %}
+        <b>{{ profile.mention }}</b>
+    {% endif %}
+</a>

@@ -1,0 +1,8 @@
+{% load static %}
+<form method="post">
+    {% csrf_token %}
+    {% for field in form.visible_fields %}
+        {{ field }}
+    {% endfor %}
+    <input type="submit" value="Написать!" onclick="playSound('{% static '/sounds/publishSound.mp3' %}')">
+</form>

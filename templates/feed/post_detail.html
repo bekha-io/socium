@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %}Публикация #{{ post.pk }}{% endblock %}
+
+{% block content %}
+    <article>
+    {% include 'snippets/post.html' with post=post %}
+    </article>
+{% endblock %}

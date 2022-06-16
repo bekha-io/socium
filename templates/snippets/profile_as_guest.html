@@ -1,0 +1,18 @@
+<div class="profile_panel">
+    {% include 'snippets/user_mention.html' with profile=profile %}
+    <div>
+        <p>
+            <i class="fi fi-rr-users-alt"></i> {{ profile.following_count }} подписчиков
+        </p>
+        <p>
+            <i class="likes_icon fi fi-rr-heart"></i> {{ profile.total_likes_count }} лайков
+        </p>
+    </div>
+    <form action="{% url 'profile.follow_unfollow' following_user_id=profile.user.id %}">
+        {% if is_following == False %}
+            <input data-action="follow" type="submit" value="Подписаться"/>
+        {% else %}
+            <input data-action="unfollow" type="submit" value="Отписаться"/>
+        {% endif %}
+    </form>
+</div>

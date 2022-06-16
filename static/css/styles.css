@@ -1,0 +1,104 @@
+* {
+    overflow-wrap: break-word;
+    vertical-align: middle !important;
+    font-family: Nunito !important;
+    text-decoration-line: none !important;
+}
+
+.errorlist {
+    color: red;
+}
+
+.user-mention {
+    text-decoration: none;
+}
+
+.feed {
+    display: flex;
+    flex-direction: column;
+}
+
+#avatar-32 {
+    border-radius: 5px;
+    min-width: 32px;
+    min-height: 32px;
+    max-width: 32px;
+    max-height: 32px;
+    object-fit: cover;
+}
+
+#avatar-18 {
+    border-radius: 5px;
+    min-width: 18px;
+    min-height: 18px;
+    max-width: 18px;
+    max-height: 18px;
+    object-fit: cover;
+}
+
+#post {
+    font-size: 18px;
+}
+
+#post > .post_text,
+#post > .post_text > a, b {
+    vertical-align: baseline !important;
+}
+
+
+.post_details > * {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+
+.post_details {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    align-content: space-between;
+    flex-direction: row;
+    font-size: 18px;
+    gap: 5px;
+    width: 22px;
+}
+
+.post_details > * {
+    margin-right: 5px;
+}
+
+textarea {
+    resize: None;
+    width: 100%;
+    height: 100px;
+}
+
+input {
+    width: 100%;
+}
+
+.profile_panel {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-items: center;
+    text-align: center;
+}
+
+
+input[data-action="unfollow"] {
+    background-color: transparent !important;
+    border: 1px solid black;
+    color: black;
+}
+
+
+.badge_counter {
+    vertical-align: middle;
+    background-color: var(--accent);
+    border-radius: 50%;
+    color: white;
+    padding: 2px 5px;
+    font-size: 10px;
+
+}
