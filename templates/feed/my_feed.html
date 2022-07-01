@@ -7,8 +7,37 @@
     {% if request.user.is_authenticated %}
         {% include 'snippets/publish_post_form.html' with form=form %}
     {% endif %}
-    {% if following_posts %}
-        {% include 'snippets/posts_feed.html' with posts=following_posts title="Моя лента" %}
-    {% endif %}
-    {% include 'snippets/posts_feed.html' with posts=latest_posts title="Интересное" %}
+
+    <section class="block" id="feed">
+        <div class="header">
+            <div class="title">Лента</div>
+            {% if request.user.is_authenticated %}
+                <div class="tab_menu">
+                    <a href='{% url 'home' %}?feed=following#feed'><i class="fi fi-rr-users-alt"></i> Моя лента</a>
+                    <a href='{% url 'home' %}?feed=new#feed'><i class="fi fi-rr-confetti"></i> Интересное</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="body">
+            {% if following_posts and request.user.is_authenticated %}
+                {% with following_posts|length as posts_count %}
+                    {% if posts_count >= 1 %}
+                        {% include 'snippets/posts_feed.html' with posts=following_posts title="Моя лента" %}
+                    {% else %}
+                        {{ "WORND" }}
+                    {% endif %}
+                {% endwith %}
+            {% elif latest_posts %}
+                {% include 'snippets/posts_feed.html' with posts=latest_posts title="Интересное" %}
+            {% else %}
+                <section>
+                    <h2>Упс :(</h2>
+                    <p>Вы не подписаны на других пользователей. Попробуйте подписаться на интересующий вас контент
+                        или
+                        просмотрите вкладку Интересное</p>
+                </section>
+            {% endif %}
+        </div>
+    </section>
 {% endblock %}

@@ -1,10 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% load static %}
+<style>
+    #publish_comment_form input,
+    #publish_comment_form textarea {
+        font-size: 16px;
+    }
+</style>
+
+<form id="publish_comment_form" method="post">
+    {% csrf_token %}
+    {% for field in form.visible_fields %}
+        {{ field }}
+    {% endfor %}
+    <div class="editor_panel">
+        <span id="symbols_counter">0/256</span>
+    </div>
+    <input type="submit" value="Написать!">
+</form>
+
+<script type="text/javascript">
+    jQuery("#publish_comment_form").children('textarea').on('change input', function (event) {
+        var maxLength = 256
+        var text = event.target.value
+        var counterEl = jQuery("#publish_comment_form").children('div.editor_panel').children('span#symbols_counter')
+
+        counterEl.text(text.length+"/"+maxLength)
+
+        if (text.length >= maxLength) {
+            counterEl.css('color', 'red');
+            counterEl.css('font-weight', 'bold');
+        }
+        else {
+            counterEl.css('color', 'grey');
+            counterEl.css('font-weight', 'normal')
+        }
+    })
+</script>

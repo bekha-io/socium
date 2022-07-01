@@ -1,8 +1,42 @@
 {% load static %}
-<form method="post">
+<form id="publish_post_form" method="post">
     {% csrf_token %}
     {% for field in form.visible_fields %}
         {{ field }}
     {% endfor %}
-    <input type="submit" value="Написать!" onclick="playSound('{% static '/sounds/publishSound.mp3' %}')">
+    <div class="editor_panel">
+        <input type="file" id="imgupload" style="display:none"/>
+        {# <i id="open_image_dialog" class="fi fi-rr-picture"></i>  #}
+        <span id="symbols_counter">0/256</span>
+    </div>
+    <input type="submit" value="Написать!">
 </form>
+
+<script type="text/javascript">
+
+    jQuery('#open_image_dialog').click(function () {
+        jQuery('#imgupload').trigger('click');
+    });
+
+
+    function showImagesPreview() {
+        var image = jQuery('#imgupload')[0].files[0];
+    }
+
+
+    jQuery("#publish_post_form").children('textarea').on('change input', function (event) {
+        var maxLength = 256
+        var text = event.target.value
+        var counterEl = jQuery("#publish_post_form").children('div.editor_panel').children('span#symbols_counter')
+
+        counterEl.text(text.length + "/" + maxLength)
+
+        if (text.length >= maxLength) {
+            counterEl.css('color', 'red');
+            counterEl.css('font-weight', 'bold');
+        } else {
+            counterEl.css('color', 'grey');
+            counterEl.css('font-weight', 'normal')
+        }
+    })
+</script>

@@ -1,3 +1,4 @@
+import datetime
 import random
 import string
 
@@ -8,6 +9,7 @@ from django.dispatch import receiver
 from django.utils.translation import get_language, to_locale
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from notifications.models import Notification
+from django.utils import timezone
 
 
 def generate_default_username():
@@ -31,6 +33,8 @@ class Profile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    last_request_at = models.DateTimeField(auto_now_add=True)
+
     @property
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
@@ -50,6 +54,11 @@ class Profile(models.Model):
     @property
     def total_likes_count(self):
         return sum(i.likes_count for i in self.user.posts.all())
+
+    @property
+    def is_online(self):
+        diff = timezone.now() - self.last_request_at
+        return diff < timezone.timedelta(minutes=5)
 
 
 @receiver(post_save, sender=User)

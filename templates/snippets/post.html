@@ -4,22 +4,30 @@
 
 <div id="post" data-id="{{ post.id }}">
     <p>{% include 'snippets/user_mention.html' with profile=post.author.profile %}
-        <i class="published_at">{{ post.published_at | naturaltime }}</i>:
     </p>
-    <p class="post_text">{{ post.text | mention }}</p>
-    <p class="post_details">
+    <p class="post_text">{{ post.text | escape | mention }}</p>
+    <div class="post_details">
         {% if request.user in post.liked_by_users %}
-            <i class="likes_icon fi fi-sr-heart"></i>
-            <b class="likes_value">{{ post.likes_count }}</b>
-            {% comment %}<img class="likes_image" src="{% static 'images/heart_on.png' %}"/>{% endcomment %}
+            <div>
+                <i class="likes_icon fi fi-sr-heart"></i>
+                <b class="likes_value">{{ post.likes_count }}</b>
+            </div>
         {% else %}
-            <i class="likes_icon fi fi-rr-heart"></i>
-            <span class="likes_value">{{ post.likes_count }}</span>
-            {% comment %}<img class="likes_image" src="{% static 'images/heart_off.png' %}"/>{% endcomment %}
+            <div>
+                <i class="likes_icon fi fi-rr-heart"></i>
+                <span class="likes_value">{{ post.likes_count }}</span>
+            </div>
         {% endif %}
-        <span></span>
+        <div>
+            <a href="{% url 'feed.post_detail' pk=post.id %}">
+                <i class="fi fi-rr-comment"></i></a><span class="comments_value">{{ post.comments_count }}</span>
+        </div>
         {% if request.user == post.author or request.user.is_superuser %}
-            <a href="{% url 'feed.delete_post' pk=post.id %}"><i class="fi fi-rr-trash"></i></a>
+            <div>
+                <a href="{% url 'feed.delete_post' pk=post.id %}"><i class="fi fi-rr-trash"></i></a>
+            </div>
         {% endif %}
-    </p>
+        <span class="published_at">{{ post.published_at | naturaltime }}</span>
+    </div>
+
 </div>

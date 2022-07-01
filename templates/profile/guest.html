@@ -5,5 +5,15 @@
     <article>
         {% include 'snippets/profile_as_guest.html' with profile=profile %}
     </article>
-    {% include 'snippets/posts_feed.html' with title='Публикации' posts=posts %}
+    <section class="block">
+        <div class="header">
+            <div class="title">Публикации</div>
+        </div>
+        <div class="body">
+            {% include 'snippets/posts_feed.html' with title='Публикации' posts=posts %}
+        </div>
+    </section>
+
+
+
 {% endblock %}

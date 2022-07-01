@@ -1,10 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="block" id="feed">
+        <div class="header">
+            {% if feed_type == 'following' %}
+                <div class="title">Ваши подписки</div>
+            {% elif feed_type == 'followers' %}
+                <div class="title">Подписчики</div>
+            {% endif %}
+            <div class="tab_menu">
+                <a href="?feed=following#feed"><i class="fi fi-rr-users-alt"></i> Мои подписки </a>
+                <a href="?feed=followers#feed"><i class="fi fi-rr-users-alt"></i> Подписчики </a>
+            </div>
+        </div>
+
+        <div class="body">
+            {% if objects %}
+                <div>
+                    {% if feed_type == 'following' %}
+                        <i>Вы подписаны на {{ request.user.following.count }} пользователей</i>
+                    {% elif feed_type == 'followers' %}
+                        <i>На вас подписаны {{ request.user.followers.count }} пользователей</i>
+                    {% endif %}
+                    {% for record in objects %}
+                        {% if feed_type == 'following' %}
+                            <p>{% include 'snippets/user_mention.html' with profile=record.following_user.profile %}</p>
+                        {% elif feed_type == 'followers' %}
+                            <p>{% include 'snippets/user_mention.html' with profile=record.user.profile %}</p>
+                        {% endif %}
+                        <hr>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {% if feed_type == 'following' %}
+                    <p>Вы не подписаны на других пользователей</p>
+                {% elif feed_type == 'followers' %}
+                    <p>У вас нет подписчиков</p>
+                {% endif %}
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

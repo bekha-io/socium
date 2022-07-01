@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.utils.html import strip_tags
+from common.models import SoftDeleteModel
 
 
 # Create your models here.
@@ -26,6 +27,10 @@ class Post(models.Model):
     def liked_by_users(self):
         return [i.user for i in self.likes.filter()]
 
+    @property
+    def comments_count(self):
+        return self.comments.count()
+
 
 class PostLike(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts_liked")
@@ -35,3 +40,17 @@ class PostLike(models.Model):
 
     class Meta:
         unique_together = ('user', 'post')
+
+
+class Comment(SoftDeleteModel):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="post_comments")
+
+    text = models.TextField(max_length=256)
+
+    published_at = models.DateTimeField(auto_now_add=True)
+    edited_at = models.DateTimeField(auto_now=True)
+
+
+def post_images_upload_path(instance, filename):
+    return f'posts/{instance.post.id}_{filename}'

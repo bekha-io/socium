@@ -1,8 +1,9 @@
 <a class="user-mention" href="{% url 'profile.guest' pk=profile.user.id %}">
     {% if profile.avatar_url %}
-        <img src="{{ profile.avatar_url }}" id="avatar-32"> <b>{{ profile.mention }}</b>
+        <img src="{{ profile.avatar_url }}" id="avatar-32"> <b class="username">{{ profile.mention }}</b>
         {% if profile.is_verified %} <i class="fi fi-sr-comment-check"></i> {% endif %}
     {% else %}
-        <b>{{ profile.mention }}</b>
+        <b class="username">{{ profile.mention }}</b>
     {% endif %}
+    {% if profile.is_online %}<span class="circle online"></span>{% endif %}
 </a>

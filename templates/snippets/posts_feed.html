@@ -1,8 +1,5 @@
-<section class="feed">
-    {% if title %}
-        <h2>{{ title }}</h2>
-    {% endif %}
+<div class="feed">
     {% for post in posts %}
         {% include 'snippets/post.html' with post=post %}
     {% endfor %}
-</section>
+</div>

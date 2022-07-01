@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 {% load static %}
 {% load notifications_tags %}
 <html lang="ru">
@@ -14,6 +15,8 @@
           integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css'>
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
@@ -21,6 +24,35 @@
 
     <script type="text/javascript">
         jQuery.noConflict();
+
+        var previousNotificationCounter = 0;
+
+        var liveUpdateNotificationsCounter = window.setInterval(function () {
+            jQuery.ajax({
+                    async: true,
+                    url: '/notifications/api/unread_count/',
+                    method: 'get',
+                    success: function (data) {
+                        if (data.unread_count > 0 && data.unread_count !== previousNotificationCounter) {
+                            var badgeElem = jQuery("#notifications_badge").children('span');
+                            badgeElem.attr('class', 'badge_counter');
+                            badgeElem.text(data.unread_count)
+                            previousNotificationCounter = data.unread_count;
+                            Swal.fire({
+                                icon: 'info',
+                                toast: true,
+                                position: 'top-end',
+                                timer: 3000,
+                                timerProgressBar: true,
+                                title:
+                                    '<a href="{% url 'profile.notifications' %}">У вас новые уведомления</a>',
+                            })
+                        }
+                    }
+                },
+            )
+        }, 15000);
+
 
         function playSound(url) {
             var likeSound = new Audio(url);
@@ -30,15 +62,48 @@
 
         function updatePostDetails(postElem, counterValue, is_like) {
             if (is_like === true) {
-                jQuery(postElem).children('.post_details').children('.likes_value').text(counterValue).css("font-weight", "bold");
-                jQuery(postElem).children('.post_details').children('.likes_icon').attr('class', 'likes_icon fi fi-sr-heart');
+                jQuery(postElem).children('.post_details').children('div').children('.likes_value').text(counterValue).css("font-weight", "bold");
+                jQuery(postElem).children('.post_details').children('div').children('.likes_icon').attr('class', 'likes_icon fi fi-sr-heart');
             } else {
-                jQuery(postElem).children('.post_details').children('.likes_value').text(counterValue).css("font-weight", "normal");
-                jQuery(postElem).children('.post_details').children('.likes_icon').attr('class', 'likes_icon fi fi-rr-heart');
+                jQuery(postElem).children('.post_details').children('div').children('.likes_value').text(counterValue).css("font-weight", "normal");
+                jQuery(postElem).children('.post_details').children('div').children('.likes_icon').attr('class', 'likes_icon fi fi-rr-heart');
             }
         }
 
         jQuery(document).ready(function () {
+
+            jQuery('.delete_comment').click(function () {
+
+                var elem = jQuery(this)
+                var commentId = elem.attr('data-id');
+
+                jQuery.ajax({
+                    async: false,
+                    url: '/api/v1/comment/' + commentId + '/delete',
+                    method: 'post',
+                    success: function (resp) {
+                        if (resp.status === 'success') {
+                            window.location.reload();
+                        }
+                    }
+                })
+            })
+
+            jQuery(".reply").click(function () {
+                var elem = jQuery(this)
+                var authorUsername = elem.attr('data-author-username');
+
+                var textAreaEl = jQuery('textarea[name="text"]');
+                var currentTextVal = textAreaEl.val(authorUsername + ' , ');
+                textAreaEl.focus();
+            })
+
+            // Preventing Enter-button in textarea
+            jQuery('form').on('keydown', function (ev) {
+                if (ev.key === "Enter" && jQuery(ev.target).is('textarea')) {
+                    ev.preventDefault();
+                }
+            });
 
 
             // Follow/Unfollow AJAX processing
@@ -46,7 +111,7 @@
             // Like/Unlike AJAX processing
             jQuery("[class*='likes_icon']").click(function () {
                 var elem = jQuery(this)
-                var post_id = elem.parent().parent().attr('data-id');
+                var post_id = elem.parent().parent().parent().attr('data-id');
                 jQuery.ajax({
                     async: false,
                     url: '/api/v1/post/' + post_id + '/like',
@@ -60,7 +125,6 @@
                             var counter = resp.data.post.likes;
                             if (resp.status === 'fail') {
                                 toUpdateElements.each(function (index, item) {
-                                    playSound('{% static '/sounds/dislikeSound.mp3' %}')
                                     updatePostDetails(item, counter, false);
                                 })
                             } else {
@@ -70,7 +134,11 @@
                                 })
                             }
                         {% else %}
-                            alert("Войдите или зарегистрируйтесь!")
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Упс...',
+                                text: 'Войдите или зарегистрируйтесь!',
+                            })
                         {% endif %}
                     }
                 });
@@ -94,14 +162,14 @@
         {% if request.user.is_authenticated %}
             <a href="{% url 'home' %}"> <i class="fi fi-rr-home"></i> Домой</a>
             <a href="{% url 'feed.my_posts' %}"><i class="fi fi-rr-pencil"></i> Мое</a>
-            <a href="{% url 'profile.notifications' %}">
+            <a id="notifications_badge" href="{% url 'profile.notifications' %}">
                 {% notifications_unread as unread_count %}
                 {% if unread_count >= 1 and unread_count < 99 %}
                     <span class="badge_counter">{% notifications_unread %}</span>
                 {% elif unread_count >=  99 %}
                     <span class="badge_counter">99+</span>
                 {% else %}
-                    <i class="fi fi-rr-bell"></i>
+                    <span class="fi fi-rr-bell"></span>
                 {% endif %}
                 Уведомления</a>
             <a href="{% url 'profile.me' %}"><i class="fi fi-rr-user"></i> Профиль</a>
@@ -112,28 +180,33 @@
             <a href="{% url 'profile.signup' %}"><i class="fi fi-rr-user-add"></i> Регистрация</a>
         {% endif %}
     </nav>
-    <h1>Socium</h1>
+    <div class="app_name"><h1>Socium</h1><sup><a href="{{ WHATS_NEW_URL }}">Что нового?</a></sup></div>
     {% if request.user.is_authenticated %}
         {% include 'snippets/user_mention.html' with profile=request.user.profile %}
-        {% with profile=request.user.profile %}
-            <p><i class="fi fi-rr-users-alt"></i> {{ profile.following_count }} подписчиков</p>
-            <p><i class="fi fi-rr-heart"></i> {{ profile.total_likes_count }} лайков</p>
-        {% endwith %}
-    {% elif profile %}
-        {% include 'snippets/user_mention.html' with profile=profile %}
-        <p><i class="fi fi-rr-users-alt"></i> {{ profile.following_count }} подписчиков</p>
+        <div class="profile_info">
+            {% with profile=request.user.profile %}
+                <a href="{% url 'profile.following' %}"><i
+                        class="fi fi-rr-users-alt"></i> {{ profile.following_count }}
+                    подписчиков</a>
+                <p><i class="fi fi-rr-heart"></i> {{ profile.total_likes_count }} лайков</p>
+            {% endwith %}
+        </div>
     {% else %}
         <p>Самая лайтовая социальная сеть в мире!</p>
     {% endif %}
 </header>
 
 <main>
+    {% block tabmenu %}
+    {% endblock %}
+
     {% block content %}
     {% endblock %}
 </main>
 
 <footer>
     Made by Bekhruz Iskandarzoda. Product of Tajikistan
+    <p>{{ APP_VERSION_NUMBER }}</p>
 </footer>
 </body>
 

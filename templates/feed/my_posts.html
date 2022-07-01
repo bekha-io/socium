@@ -4,5 +4,12 @@
 
 {% block content %}
     {% include 'snippets/publish_post_form.html' with form=form %}
-    {% include 'snippets/posts_feed.html' with posts=my_posts title="Мои публикации" %}
+    <section class="block">
+        <div class="header">
+            <div class="title">Мои публикации</div>
+        </div>
+        <div class="body">
+            {% include 'snippets/posts_feed.html' with posts=my_posts %}
+        </div>
+    </section>
 {% endblock %}

@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from feed.models import Post, PostLike
+from feed.models import Post, PostLike, Comment
 
 
 @login_required
@@ -43,6 +43,7 @@ def like_unlike(request: HttpRequest, post_id: int):
 
 
 @login_required
+@csrf_exempt
 def follow_unfollow(request, following_user_id: int):
     following_user = User.objects.get(id=following_user_id)
 
@@ -57,3 +58,22 @@ def follow_unfollow(request, following_user_id: int):
                                       following_user=following_user)
 
     return redirect('profile.guest', pk=following_user_id)
+
+
+@login_required
+@csrf_exempt
+def comment_delete(request, comment_id: int):
+    try:
+        comment = Comment.objects.get(id=comment_id)
+    except Comment.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.user == comment.author or request.user == comment.post.author \
+            or request.user.is_superuser:
+        comment.soft_delete()
+        return JsonResponse(
+            data={
+                "status": "success",
+            })
+    else:
+        return HttpResponse(status=403)

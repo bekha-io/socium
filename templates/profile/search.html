@@ -3,24 +3,24 @@
 {% block content %}
     {% include 'snippets/search_form.html' %}
     {% if users %}
-        <section>
-            <h2>Пользователи</h2>
-            <div>
+        <section class="block">
+            <div class="header">
+                <div class="title">Пользователи</div>
+            </div>
+            <div class="body">
                 {% for user in users %}
                     <p>{% include 'snippets/user_mention.html' with profile=user.profile %}</p>
-                    <hr>
                 {% endfor %}
             </div>
         </section>
     {% endif %}
     {% if posts %}
-        <section>
-            <h2>Посты</h2>
-            <div>
-                {% for post in posts %}
-                    <p>{% include 'snippets/post.html' with post=post %}</p>
-                    <hr>
-                {% endfor %}
+        <section class="block">
+            <div class="header">
+                <div class="title">Публикации</div>
+            </div>
+            <div class="body">
+                {% include 'snippets/posts_feed.html' with posts=posts %}
             </div>
         </section>
     {% endif %}

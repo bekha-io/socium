@@ -1,5 +1,6 @@
 <div class="profile_panel">
     {% include 'snippets/user_mention.html' with profile=profile %}
+    {% include 'snippets/online_offline_status.html' with profile=profile %}
     <div>
         <p>
             <i class="fi fi-rr-users-alt"></i> {{ profile.following_count }} подписчиков

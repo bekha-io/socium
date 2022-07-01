@@ -4,6 +4,15 @@
 
 {% block content %}
     <article>
-    {% include 'snippets/post.html' with post=post %}
+        {% include 'snippets/post.html' with post=post %}
     </article>
+    <div class="block">
+        <h3>Комментарии</h3>
+        {% for comment in comments %}
+            {% include 'snippets/comment.html' with comment=comment %}
+        {% endfor %}
+    </div>
+    {% if request.user.is_authenticated %}
+    {% include 'snippets/publish_comment_form.html' with form=comment_form %}
+    {% endif %}
 {% endblock %}

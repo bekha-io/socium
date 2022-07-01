@@ -18,4 +18,4 @@ def get_my_posts(user: User):
 
 
 def get_my_and_following_posts(user: User):
-    return reversed(sorted(chain(get_my_posts(user), get_following_posts(user)), key=lambda i: i.published_at))
+    return list(reversed(sorted(chain(get_my_posts(user), get_following_posts(user)), key=lambda i: i.published_at)))

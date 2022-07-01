@@ -15,7 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+
 import notifications.urls
+
+
+handler404 = 'socium.views.handler404'
+handler500 = 'socium.views.handler500'
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,6 +29,7 @@ urlpatterns = [
     path('notifications/', include(notifications.urls, namespace='notifications')),
     path('', include('django.contrib.auth.urls')),
 
+    path('', include('common.urls')),
     path('', include('feed.urls')),
     path('user/', include('personal.urls')),
     path('api/v1/', include('api.urls'))

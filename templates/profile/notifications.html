@@ -2,6 +2,18 @@
 
 {% block title %}Уведомления{% endblock %}
 
+
 {% block content %}
-    {% include 'snippets/notifications_feed.html' with title='Мои уведомления' notifications=notifications %}
+    <div class="block">
+        <div class="header">
+            <div class="title">Уведомления</div>
+            <div class="tab_menu">
+                <a href='{% url 'profile.notifications' %}?type=unread'><i class="fi fi-sr-bell"></i> Непрочитанные</a>
+                <a href='{% url 'profile.notifications' %}?type=all'><i class="fi fi-rr-bell"></i> Все уведомления</a>
+            </div>
+        </div>
+        <div class="body">
+            {% include 'snippets/notifications_feed.html' with notifications=notifications %}
+        </div>
+    </div>
 {% endblock %}

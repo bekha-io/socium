@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'personal.middlewares.OnlineOfflineMiddleware'
 ]
 
 ROOT_URLCONF = 'socium.urls'
@@ -70,6 +71,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'socium.context_processors.app_version',
+                'socium.context_processors.whats_new_url',
             ],
         },
     },
@@ -117,3 +120,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "login"
+
+
+with open("./version.txt") as v_file:
+    APP_VERSION_NUMBER = v_file.read()
+
+WHATS_NEW_URL = "https://teletype.in/@socium/v1.1"
+

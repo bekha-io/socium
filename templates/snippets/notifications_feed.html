@@ -2,7 +2,12 @@
     {% if title %}
         <h2>{{ title }}</h2>
     {% endif %}
-    {% for notification in notifications %}
-        {% include 'snippets/notification.html' with notification=notification %}
-    {% endfor %}
+
+    {% if notifications %}
+        {% for notification in notifications %}
+            {% include 'snippets/notification.html' with notification=notification %}
+        {% endfor %}
+    {% else %}
+        <p>У вас нет новых / непрочитанных уведомлений</p>
+    {% endif %}
 </section>

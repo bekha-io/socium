@@ -1,10 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% load humanize %}
+{% load mention %}
+<div data-id="{{ comment.id }}" class="comment">
+    {% include 'snippets/user_mention_inline.html' with profile=comment.author.profile %}
+    <div class="comment_details">
+        {% if not comment.deleted_at %}
+            <span class="text">{{ comment.text | escape | mention:'user_comment_mention' }}</span>
+        {% else %}
+            <i class="text">Комментарий был удален.</i>
+        {% endif %}
+            {% if comment.author != request.user and request.user.is_authenticated %}
+                <i data-author-username="{{ comment.author.profile.mention }}" class="action reply fi fi-rr-reply-all"></i>
+            {% endif %}
+        {% if request.user.is_superuser or request.user == comment.author or request.user == comment.post.author %}
+            {% if not comment.deleted_at %}
+                <i data-id="{{ comment.id }}" class="action delete_comment fi fi-rr-trash"></i>
+            {% endif %}
+        {% endif %}
+        <span class="date">{{ comment.published_at | naturaltime }}</span>
+    </div>
+</div>
+<hr>

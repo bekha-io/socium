@@ -91,7 +91,7 @@ class ProfileDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["posts"] = self.object.user.posts.all()
+        ctx["posts"] = self.object.user.posts.order_by('-published_at')
         is_following = True if self.request.user.following.filter(following_user=self.object.user) else False
         ctx["is_following"] = is_following
         return ctx
@@ -101,26 +101,34 @@ class ProfileDetailView(DetailView):
         return profile
 
 
-class SearchView(TemplateView):
-    template_name = 'profile/search.html'
-    http_method_names = ('get')
-
-    def get_context_data(self, **kwargs):
-        q = self.request.GET.get('q')
-        print(q)
-        ctx = super().get_context_data(**kwargs)
-
-        if q:
-            ctx['users'] = User.objects.filter(username__contains=q).all()
-            ctx['posts'] = Post.objects.filter(text__contains=q).order_by('-published_at')[:20]
-
-        return ctx
-
-
 class MyNotificationsView(TemplateView):
     template_name = 'profile/notifications.html'
 
     def get_context_data(self, **kwargs):
+        n_type = self.request.GET.get('type') or 'unread'
+
         ctx = super().get_context_data(**kwargs)
-        ctx['notifications'] = NotificationProxy.objects.filter(recipient=self.request.user)
+
+        if n_type == "unread":
+            ctx['notifications'] = NotificationProxy.objects.filter(recipient=self.request.user, unread=1)
+        else:
+            ctx['notifications'] = NotificationProxy.objects.filter(recipient=self.request.user)
+
+        return ctx
+
+
+class MyFollowingView(TemplateView):
+    model = User
+    template_name = 'profile/following_list.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        feed_type = self.request.GET.get('feed') or 'following'
+
+        if feed_type == 'followers':
+            ctx['objects'] = self.request.user.followers.all()
+        else:
+            ctx['objects'] = self.request.user.following.all()
+
+        ctx['feed_type'] = feed_type
         return ctx

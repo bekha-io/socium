@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% load humanize %}
+
+{% if profile.is_online == True %}
+    <p class="status online">В сети</p>
+{% else %}
+    <p class="status offline"><span class="circle offline"></span> Был в сети {{ profile.last_request_at | naturaltime }}</>
+{% endif %}

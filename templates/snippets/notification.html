@@ -1,7 +1,15 @@
 {% load mention %}
 {% load humanize %}
-<div class="notification">
-    {{ notification | mention_raw }}
-    <span style="display: none">{{ notification.mark_as_read }}</span>
-    <hr>
-</div>
+{% if notification.unread == True %}
+    <div class="notification unread">
+        <span style="display: none">{{ notification.mark_as_read }}</span>
+        {{ notification | mention_raw }}
+        <hr>
+    </div>
+{% else %}
+    <div class="notification">
+        {{ notification | mention_raw }}
+        <hr>
+    </div>
+{% endif %}
+

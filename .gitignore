@@ -6,3 +6,6 @@ socium/prod_settings.py
 
 *.idea
 *__pycache__
+
+
+makemigrations/**
