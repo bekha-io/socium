@@ -1,3 +1,5 @@
+import typing
+
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
 from notifications.signals import notify
@@ -14,7 +16,7 @@ class NotificationVerbs:
     HAS_MENTIONED_YOU_IN_COMMENTS = "отметил вас в комментариях к публикации"
 
 
-def extract_mention(text: str) -> list[int]:
+def extract_mention(text: str) -> typing.List['User']:
     mentioned = []
     for word in text.split():
         if word[0] == '@':
