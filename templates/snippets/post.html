@@ -20,7 +20,9 @@
         {% endif %}
         <div>
             <a href="{% url 'feed.post_detail' pk=post.id %}">
-                <i class="fi fi-rr-comment"></i></a><span class="comments_value">{{ post.comments_count }}</span>
+                <i class="fi fi-rr-comment-alt"></i>
+            </a>
+            <span class="comments_value">{{ post.comments_count }}</span>
         </div>
         {% if request.user == post.author or request.user.is_superuser %}
             <div>
